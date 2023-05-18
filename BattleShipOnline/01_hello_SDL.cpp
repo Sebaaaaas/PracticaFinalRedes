@@ -4,7 +4,7 @@ and may not be redistributed without written permission.*/
 //Using SDL and standard IO
 #include <SDL2/SDL.h>
 #include <stdio.h>
-
+#include "tablero.h"
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -43,16 +43,30 @@ int main( int argc, char* args[] )
         }
         else
         {
-            //Apply the image
-            SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
+			Tablero* t = new Tablero();
+			bool quit = false;
 
-			//Update the surface
-            SDL_UpdateWindowSurface( gWindow );
+			SDL_Event e;
+
+			while(!quit){
+				while(SDL_PollEvent(&e) != 0){
+					if(e.type == SDL_QUIT){
+						quit = true;
+					}
+				}
+
+				//Apply the image
+				SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
+
+				//Update the surface
+				SDL_UpdateWindowSurface( gWindow );
+			}
 
 			//Hack to get window to stay up
-            SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
+            //SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
         }
     }
+
 
     //Free resources and close SDL
     close();
@@ -95,13 +109,13 @@ bool loadMedia()
     //Loading success flag
     bool success = true;
 
-    //Load splash image
-    gHelloWorld = SDL_LoadBMP( "test.bmp" );
-    if( gHelloWorld == NULL )
-    {
-        printf( "Unable to load image %s! SDL Error: %s\n", "test.bmp", SDL_GetError() );
-        success = false;
-    }
+	//Load splash image
+	gHelloWorld = SDL_LoadBMP( "test.bmp" );
+	if( gHelloWorld == NULL )
+	{
+		printf( "Unable to load image %s! SDL Error: %s\n", "test.bmp", SDL_GetError() );
+		success = false;
+	}
 
     return success;
 }

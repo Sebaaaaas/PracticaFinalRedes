@@ -3,7 +3,7 @@
 #and may not be redistributed without written permission.
 
 #OBJS specifies which files to compile as part of the project
-OBJS = 01_hello_SDL.cpp
+OBJS = 01_hello_SDL.cpp tablero.cpp
 
 #CC specifies which compiler we're using
 CC = g++
