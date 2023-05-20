@@ -7,4 +7,4 @@ bool init();
 bool loadMedia();
 
 //Frees media and shuts down SDL
-void close();
+void closeSDL();

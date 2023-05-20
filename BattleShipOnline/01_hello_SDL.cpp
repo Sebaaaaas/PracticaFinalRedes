@@ -5,6 +5,7 @@ and may not be redistributed without written permission.*/
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include "tablero.h"
+#include "ClickSerializer.h"
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -16,7 +17,7 @@ bool init();
 bool loadMedia();
 
 //Frees media and shuts down SDL
-void close();
+void closeSDL();
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
@@ -27,8 +28,10 @@ SDL_Surface* gScreenSurface = NULL;
 //The image we will load and show on the screen
 SDL_Surface* gHelloWorld = NULL;
 
+
 int main( int argc, char* args[] )
 {
+    
     //Start up SDL and create window
     if( !init() )
     {
@@ -43,17 +46,34 @@ int main( int argc, char* args[] )
         }
         else
         {
+            int fd = open("binarios", O_CREAT | O_RDWR | O_TRUNC, 0644);
+            close(fd);
 			Tablero* t = new Tablero();
+            Click* test_deserialize = new Click("CLICK", 0,0);
+            Click* test_click = new Click("CLICK", 0,0);
+
 			bool quit = false;
 
 			SDL_Event e;
 
 			while(!quit){
 				while(SDL_PollEvent(&e) != 0){
-					if(e.type == SDL_QUIT){
-						quit = true;
-					}
-				}
+                       if(e.type ==SDL_QUIT){
+                            quit = true;
+                       }
+                       else if(e.type == SDL_MOUSEBUTTONDOWN){
+                            if(e.button.button == SDL_BUTTON_LEFT){
+                                int x, y;
+	                            SDL_GetMouseState(&x, &y);
+                                test_click->setClickPos(x, y);
+                                test_click->toFileAndBack(test_deserialize);
+                            }
+                       }
+                       
+                }
+
+				
+                
 
 				//Apply the image
 				SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
@@ -69,7 +89,7 @@ int main( int argc, char* args[] )
 
 
     //Free resources and close SDL
-    close();
+    closeSDL();
 
     return 0;
 }
@@ -120,7 +140,7 @@ bool loadMedia()
     return success;
 }
 
-void close()
+void closeSDL()
 {
     //Deallocate surface
     SDL_FreeSurface( gHelloWorld );
