@@ -121,6 +121,9 @@ void closeSDL()
 }
 
 void run(){
+	Tablero* t;
+	t = new Tablero();
+
 	int fd = open("binarios", O_CREAT | O_RDWR | O_TRUNC, 0644);
 	close(fd);
 	Click* test_deserialize = new Click("CLICK", 0,0);
