@@ -1,22 +1,14 @@
-#include "tablero.h"
+#include "Tablero.h"
+#include "Texture.h"
+#include "Barco.h"
+#include <vector>
 
 #include <iostream>
 
-class Barco{
 
-public:
-    inline int getX(){return posX;};
-    inline int getY(){return posY;};
-    inline int getLongitud(){return longitud;};
-    inline bool getHorizontal(){return horizontal;};
 
-private:
-    int posX, posY;
-    int longitud;
-    bool horizontal;
-};
-
-Tablero::Tablero(){
+Tablero::Tablero(Vector2D p, int w, int h, Texture* t) : pos(p), width(w), height(h), tex(t)
+{
     printf( "tablero creado!\n" );
 
     //tablero de 10x10
@@ -28,32 +20,17 @@ Tablero::~Tablero(){
 
 }
 
-bool Tablero::colocaBarco(Barco* b){
-    
-    //comprobamos que no se sale por los lados del tablero(x >> columnas, y >> filas)
-    if(b->getX() < 0 || b->getX() > columnas || b->getY() < 0 || b->getY() > filas
-        || (b->getHorizontal() && b->getX() + b->getLongitud() > columnas)
-        || (!b->getHorizontal() && b->getX() + b->getLongitud() > filas))
-        return false;
 
-    //comprobamos que no choca con otro barco
-    bool exito = true;
-    if(b->getHorizontal()){
-        int i = b->getX();
-        while(exito && i < b->getLongitud()){
-            if(casillas[i][b->getY()] == true) //choca con otro barco
-                exito = false;
-            ++i;
-        }
-    }
-    else{
-        int i = b->getY();
-        while(exito && i < b->getLongitud()){
-            if(casillas[b->getX()][i] == true) //choca con otro barco
-                exito = false;
-            ++i;
-        }
-    }
 
-    return exito;
+void Tablero::render(){
+    tex->render(getRect());
+}
+
+SDL_Rect Tablero::getRect() const
+{
+	SDL_Rect rect;
+	rect.x = pos.getX(); rect.y = pos.getY();
+	rect.w = width, rect.h = height;
+
+	return rect;
 }
