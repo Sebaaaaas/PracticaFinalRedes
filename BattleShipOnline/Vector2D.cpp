@@ -1,0 +1,68 @@
+#include "Vector2D.h"
+
+Vector2D& Vector2D::normalizeVector()
+{
+	double mod = pow(x, 2) + pow(y, 2); // potencia de cuadrados
+	mod = sqrt(mod); // ra�z del resultado
+	x = x / mod; y = y / mod; // lo asigno
+	Vector2D newVector = Vector2D(x,y);
+	return newVector; // y lo devuelvo
+}
+
+Vector2D& Vector2D::operator+(const Vector2D& other)
+{
+	double aux_x, aux_y;
+	aux_x = x + other.x; aux_y = y + other.y; // lo asigno
+	Vector2D newVector = Vector2D(aux_x, aux_y);
+	return newVector; // y lo devuelvo
+}
+
+Vector2D& Vector2D::operator-(const Vector2D& other)
+{
+	double aux_x, aux_y;
+	aux_x = x - other.x; aux_y = y - other.y;
+	Vector2D newVector = Vector2D(aux_x, aux_y);
+	return newVector; // y lo devuelvo
+}
+
+Vector2D& Vector2D::operator*(const Vector2D& other)
+{
+	x *= other.x; y *= other.y; // lo asigno
+	Vector2D newVector = Vector2D(x,y);
+	return newVector; // y lo devuelvo
+}
+
+Vector2D& Vector2D::operator+=(const Vector2D& other)
+{
+	x += other.x; y += other.y; // lo asigno
+	Vector2D newVector = Vector2D(x,y);
+	return newVector; // y lo devuelvo
+}
+
+Vector2D& Vector2D::operator*(const int& other)
+{
+	x = other * x; y = other * y; // lo asigno
+	Vector2D newVector = Vector2D(x,y);
+	return newVector; // y lo devuelvo
+}
+
+double Vector2D::scalarProduct(const Vector2D& v1, const Vector2D& v2)
+{
+	double suma1, suma2; // creo dos variables de tipo double
+
+	// multiplico la x de uno con la x del otro y almaceno el resultado
+	suma1 = v1.x * v2.x; 
+	// multiplico la y de uno con la y del otro y almaceno el resultado
+	suma2 = v1.y * v2.y;
+
+	double sumaTotal = suma1 + suma2;
+
+	return sumaTotal; // devuelvo la suma de ambos resultados
+}
+
+Vector2D& Vector2D::scalarMultiplication(const double& scalar)
+{
+	x *= scalar; y *= scalar; // lo asigno
+	Vector2D newVector = Vector2D(x,y);
+	return newVector; // y lo devuelvovo
+}
