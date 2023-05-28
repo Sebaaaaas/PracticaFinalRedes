@@ -8,10 +8,12 @@ and may not be redistributed without written permission.*/
 #include "Tablero.h"
 #include "Texture.h"
 #include "Barco.h"
-#include "ClickSerializer.h"
 #include "Texture.h"
-#include "ClientServer.h"
 #include "Vector2D.h"
+#include "GameStateMachine.h"
+#include "GameState.h"
+#include "Network/ClickSerializer.h"
+#include "Network/ClientServer.h"
 #include "GameObjects/Button.h"
 // Screen dimension constants
 const int SCREEN_WIDTH = 640;
@@ -44,6 +46,7 @@ Texture *tableroText = nullptr;
 Texture *boatText = nullptr;
 Texture *botonTex = nullptr;
 
+GameStateMachine* gsMachine = nullptr;
 
 int main(int argc, char *args[])
 {
@@ -143,8 +146,8 @@ void run()
     Tablero *t = new Tablero(Vector2D(0, 0), SCREEN_WIDTH, SCREEN_HEIGHT, tableroText);
     Barco *b = new Barco(Vector2D(0, 0), 80, 24, boatText, t);
 
-    Vector2D* v = new Vector2D(0,0);
-    Button *testButton = new Button(v, 30, 30, botonTex);
+    Vector2D* v = new Vector2D(30,0);
+    Button *testButton = new Button(v, 60, 60, botonTex);
     // INICIO DEL TABLERO REAL, 100 en X y 90 en Y
     // 460 de ancho 320 de largo
     //  46 por columna    40 por fila
@@ -176,11 +179,14 @@ void run()
                 break;
                 }
             }
+            else
+                testButton->handleEvents(e);
             
             
         }
 
         b->update();
+        testButton->update();
 
         SDL_RenderClear(gRender);
 

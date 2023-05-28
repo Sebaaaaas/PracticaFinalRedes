@@ -4,8 +4,6 @@
 
 class Vector2D;
 class Texture;
-// #include "../Vector2D.h"
-// #include "../Texture.h"
 
 class BattleShipObject : public GameObject
 {

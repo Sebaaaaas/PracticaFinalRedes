@@ -3,10 +3,6 @@
 #include "BattleShipObject.h"
 #include "../Vector2D.h"
 
-// class Game;
-
-// using CallBackOnClick = void(Game* game);
-
 enum button_state
 {
 	MOUSE_OUT = 0,
@@ -31,6 +27,5 @@ private:
 	button_state m_currentFrame;
 
 	SDL_Point pMousePos;
-	// CallBackOnClick* cbOnClick = nullptr;
 
 };

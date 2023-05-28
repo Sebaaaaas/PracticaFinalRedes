@@ -1,6 +1,6 @@
 #include "Barco.h"
 #include <iostream>
-#include "ClickSerializer.h"
+#include "Network/ClickSerializer.h"
 
 Barco::Barco(Vector2D p, int w, int h, Texture *t, Tablero* tab) : pos(p), width(w), height(h), tex(t), currentTablero(tab)
 {
@@ -12,7 +12,6 @@ Barco::Barco(Vector2D p, int w, int h, Texture *t, Tablero* tab) : pos(p), width
 void Barco::update()
 {
     if(!colocado){
-        //std::cout << "hola";
         int x, y;
         SDL_GetMouseState(&x, &y);
         pos = Vector2D(x,y);
@@ -28,7 +27,6 @@ void Barco::render()
 
 void Barco::handleEvent()
 {
-    std::cout << "hola\n";
 	// creo un evento auxiliar
 	
     int x, y;
