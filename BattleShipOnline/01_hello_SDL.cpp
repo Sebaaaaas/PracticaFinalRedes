@@ -1,4 +1,4 @@
-/*This source code copyrighted by Lazy Foo' Productions (2004-2022)
+ /*This source code copyrighted by Lazy Foo' Productions (2004-2022)
 and may not be redistributed without written permission.*/
 
 // Using SDL and standard IO
@@ -12,6 +12,7 @@ and may not be redistributed without written permission.*/
 #include "Texture.h"
 #include "ClientServer.h"
 #include "Vector2D.h"
+#include "GameObjects/Button.h"
 // Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -41,6 +42,8 @@ SDL_Surface *gHelloWorld = NULL;
 
 Texture *tableroText = nullptr;
 Texture *boatText = nullptr;
+Texture *botonTex = nullptr;
+
 
 int main(int argc, char *args[])
 {
@@ -115,6 +118,8 @@ bool loadMedia()
     }
     tableroText = new Texture(gRender, "Imgs/tablero.jpg", 1, 1);
     boatText = new Texture(gRender, "Imgs/place_Boat.png", 1, 2);
+    botonTex = new Texture(gRender, "Imgs/radio_button.png", 2, 4);
+
 
     return success;
 }
@@ -138,13 +143,15 @@ void run()
     Tablero *t = new Tablero(Vector2D(0, 0), SCREEN_WIDTH, SCREEN_HEIGHT, tableroText);
     Barco *b = new Barco(Vector2D(0, 0), 80, 24, boatText, t);
 
+    Vector2D* v = new Vector2D(0,0);
+    Button *testButton = new Button(v, 30, 30, botonTex);
     // INICIO DEL TABLERO REAL, 100 en X y 90 en Y
     // 460 de ancho 320 de largo
     //  46 por columna    40 por fila
 
     int fd = open("binarios", O_CREAT | O_RDWR | O_TRUNC, 0644);
     close(fd);
-
+    
     Click *test_deserialize = new Click("CLICK", 0, 0);
     Click *test_click = new Click("CLICK", 0, 0);
 
@@ -172,7 +179,6 @@ void run()
             
             
         }
-        
 
         b->update();
 
@@ -180,6 +186,8 @@ void run()
 
         t->render();
         b->render();
+
+        testButton->render();
 
         SDL_RenderPresent(gRender);
         // //Apply the image

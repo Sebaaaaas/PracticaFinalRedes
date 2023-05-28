@@ -23,6 +23,7 @@ public:
     void update();
     void render();
     void handleEvent();
+    
     SDL_Rect getRect() const;
     void hayHueco();
     void colocaBarco();
