@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include "Texture.h"
 #include "Tablero.h"
+#include "ClientServer.h"
 
 enum boat_place {
 	RED = 0,
@@ -22,14 +23,14 @@ public:
 
     void update();
     void render();
-    void handleEvent();
+    void handleEvent(messageInfo& info);
     
     SDL_Rect getRect() const;
     void hayHueco();
     void colocaBarco();
 
 private:
-    int longitud = 2;
+    int16_t longitud = 2;
     bool horizontal = true;
     boat_place current_boat_place;
 

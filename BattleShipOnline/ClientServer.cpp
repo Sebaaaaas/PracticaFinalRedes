@@ -1,5 +1,54 @@
 #include "ClientServer.h"
 
+void ChatMessage::to_bin()
+{
+    alloc_data(MESSAGE_SIZE);
+    memset(_data, 0, MESSAGE_SIZE);
+    char* tmp = _data;
+    memcpy(tmp, &type, sizeof(uint8_t));
+    tmp += sizeof(uint8_t);
+    memcpy(tmp, nick, sizeof(char) * MAX_NAME);
+    tmp += sizeof(char) * MAX_NAME;
+    int16_t x = message.pos.getX();
+    memcpy(tmp, &x, sizeof(int16_t));
+    tmp += sizeof(int16_t);
+    int16_t y = message.pos.getY();
+    memcpy(tmp, &y, sizeof(int16_t));
+    tmp += sizeof(int16_t);
+    memcpy(tmp, &message.horizontal, sizeof(bool));
+    tmp += sizeof(bool);
+    memcpy(tmp, &message.longitud, sizeof(int16_t));
+}
+int ChatMessage::from_bin(char* bobj)
+{
+    alloc_data(MESSAGE_SIZE);
+    memcpy(static_cast<void*>(_data), bobj, MESSAGE_SIZE);
+    char* tmp = _data;
+    memcpy(&type, tmp, sizeof(uint8_t));
+    tmp += sizeof(uint8_t);
+
+    if (type == ChatMessage::MESSAGE) std::cout << " Tipo : Mensaje\n";
+
+    memcpy(nick, tmp, sizeof(char) * 20);
+    nick[19] = '0';
+    tmp += sizeof(char) * 20;
+    std::cout << "Nick : " << nick << "\n";
+    int16_t x;
+    memcpy(&x, tmp, sizeof(int16_t));
+    tmp += sizeof(int16_t);
+    int16_t y;
+    memcpy(&y, tmp, sizeof(int16_t));
+    tmp += sizeof(int16_t);
+    message.pos = Vector2D(x, y);
+    std::cout << "Pos : " << "X " << message.pos.getX() << " Y " << message.pos.getY() << "\n";
+    memcpy(&message.horizontal, tmp, sizeof(bool));
+    tmp += sizeof(bool);
+    std::cout << "Horizontal : " << message.horizontal << "\n";
+    memcpy(&message.longitud, tmp, sizeof(int16_t));
+    std::cout << "Longitud : " << message.longitud << "\n";
+    return 0;
+}
+
 void ChatServer::do_messages()
 {
     while (true)
@@ -59,7 +108,7 @@ void ChatServer::do_messages()
 
 void ChatClient::login()
 {
-    std::string msg;
+    messageInfo msg;
 
     ChatMessage em(nick, msg);
     em.type = ChatMessage::LOGIN;
@@ -71,7 +120,7 @@ void ChatClient::login()
 
 void ChatClient::logout()
 {
-    std::string msg;
+    messageInfo msg;
 
     ChatMessage om(nick, msg);
     om.type = ChatMessage::LOGOUT;
@@ -81,18 +130,12 @@ void ChatClient::logout()
     socket.send(om, socket);
 }
 
-void ChatClient::input_thread()
+void ChatClient::input_thread(messageInfo& info)
 {
-   while (true)
-    {
-        // Leer stdin con std::getline
-        // Enviar al servidor usando socket
-        std::string clientInput;
-        std::getline(std::cin, clientInput);
-
-        ChatMessage im = ChatMessage(nick, clientInput);
+    if (info.isMessage) {
+        ChatMessage im = ChatMessage(nick, info);
         im.type = ChatMessage::MESSAGE;
-
+        info.isMessage = false;
         socket.send(im, socket);
     }
 }
@@ -107,7 +150,7 @@ void ChatClient::net_thread()
         //Mostrar en pantalla el mensaje de la forma "nick: mensaje"
         socket.recv(socketMessage, s);
 
-        std::cout << socketMessage.nick << ": " << socketMessage.message << "\n";
+        std::cout << socketMessage.nick << ": " << socketMessage.message.pos.getX() << " " << socketMessage.message.pos.getY() << " " << socketMessage.message.horizontal << " " << socketMessage.message.longitud << "\n";
 
     }
 }

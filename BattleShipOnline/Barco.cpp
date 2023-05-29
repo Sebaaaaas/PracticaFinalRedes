@@ -25,7 +25,7 @@ void Barco::render()
     tex->renderFrame(getRect(),0, current_boat_place);
 }
 
-void Barco::handleEvent()
+void Barco::handleEvent(messageInfo& info)
 {
 	// creo un evento auxiliar
 	
@@ -35,6 +35,10 @@ void Barco::handleEvent()
     boatClick->toFileAndBack(clickDeserialize);
     if(puedeColocarse && !colocado) {
         colocaBarco();
+        info.pos = Vector2D(x, y);
+        info.horizontal = horizontal;
+        info.longitud = longitud;
+        info.isMessage = true;
     }
 	
 }
@@ -59,7 +63,6 @@ void Barco::hayHueco(){
         || (!horizontal && ((filaActual+ (longitud -1)) >= currentTablero->getFilas())))
         {
             puedeColocarse = false;
-            //std::cout << "pos\n"; 
         }
         
 
@@ -69,15 +72,9 @@ void Barco::hayHueco(){
         int i = columnaActual;
         int longCheck = i + longitud;
         while(puedeColocarse && (i < longCheck)){
-            // std::cout << "check e i y filaActual\n";
-            // std::cout << longCheck << "\n";
-            // std::cout << i << "\n";
-            // std::cout << filaActual << "\n";
             if(currentTablero->getCasillas()[filaActual][i] == true){
                 //choca con otro barco
                 puedeColocarse = false;
-                
-                //std::cout << t->getFilas() << "\n";
             } 
             ++i;
         }
@@ -87,31 +84,18 @@ void Barco::hayHueco(){
         int longCheck = i + longitud;
         while(puedeColocarse && (i < longCheck)){
             if(currentTablero->getCasillas()[i][columnaActual] == true){
-                //choca con otro barco
                 puedeColocarse = false;
-                //std::cout << "vertical\n";
             } 
             ++i;
         }
     }
     if(puedeColocarse){
-        //std::cout << "green\n";
         current_boat_place = GREEN;
     }
     else{
-        //std::cout << "red\n";
         current_boat_place = RED;
     }
 
-    // std::cout << "pos" << "\n";
-    // std::cout << columnaActual << "\n";
-    // std::cout << filaActual << "\n";
-    //         std::cout << pos.getX()- 100 << "\n";
-    //         std::cout << pos.getY() - 90 << "\n";
-    //         std::cout << currentTablero->getColumnas() << "\n";
-    //         std::cout << currentTablero->getFilas() << "\n";
-    //         std::cout << columnaActual + longitud << "\n";
-    //         std::cout << filaActual+ longitud << "\n";
 }
 
 void Barco::colocaBarco()
@@ -125,11 +109,7 @@ void Barco::colocaBarco()
         int i = columnaActual;
         int longCheck = i + longitud;
         while(i < longCheck){
-            std::cout << "Antes" << "\n";
-            std::cout << true << "\n";
             currentTablero->getCasillas()[filaActual][i] = true;
-            std::cout << "despues" << "\n";
-            std::cout << currentTablero->getCasillas()[filaActual][i] << "\n";
             ++i;
         }
     }
@@ -138,7 +118,6 @@ void Barco::colocaBarco()
         int longCheck = i + longitud;
         while(i < longCheck){
             currentTablero->getCasillas()[i][columnaActual] = true;
-            std::cout << currentTablero->getCasillas()[i][columnaActual] << "\n";
             ++i;
         }
     }

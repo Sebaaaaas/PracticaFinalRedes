@@ -13,7 +13,7 @@ protected:
 	bool exitingState = false; //para cambiar de estado tras un bucle de juego y no destruir los gameObjects demasiado pronto
 
 public:
-	GameState(Game* game_);
+	//GameState(Game* game_);
 
 	virtual ~GameState() {
 		clearAllObjects();	

@@ -3,8 +3,9 @@ and may not be redistributed without written permission.*/
 
 // Using SDL and standard IO
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
+#include <thread>
+
 #include "Tablero.h"
 #include "Texture.h"
 #include "Barco.h"
@@ -28,7 +29,7 @@ bool loadMedia();
 // Frees media and shuts down SDL
 void closeSDL();
 
-void run();
+void run(ChatClient& cliente);
 
 // The window we'll be rendering to
 SDL_Window *gWindow = NULL;
@@ -48,8 +49,9 @@ Texture *botonTex = nullptr;
 
 GameStateMachine* gsMachine = nullptr;
 
-int main(int argc, char *args[])
+int main(int argc, char** argv)
 {
+    ChatClient battleShipClient(argv[1], argv[2], argv[3]); // Dirección servidor, puerto servidor y nick jugador
 
     // Start up SDL and create window
     if (!init())
@@ -65,7 +67,12 @@ int main(int argc, char *args[])
         }
         else
         {
-            run();
+            //Initialize net thread
+            std::thread net_thread([&battleShipClient]() { battleShipClient.net_thread(); });
+
+            battleShipClient.login();
+
+            run(battleShipClient);
         }
     }
 
@@ -141,13 +148,15 @@ void closeSDL()
     SDL_Quit();
 }
 
-void run()
+void run(ChatClient& cliente)
 {
     Tablero *t = new Tablero(Vector2D(0, 0), SCREEN_WIDTH, SCREEN_HEIGHT, tableroText);
     Barco *b = new Barco(Vector2D(0, 0), 80, 24, boatText, t);
 
     Vector2D* v = new Vector2D(30,0);
     Button *testButton = new Button(v, 60, 60, botonTex);
+
+    messageInfo info;
     // INICIO DEL TABLERO REAL, 100 en X y 90 en Y
     // 460 de ancho 320 de largo
     //  46 por columna    40 por fila
@@ -173,7 +182,8 @@ void run()
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 switch(e.button.button){
                 case SDL_BUTTON_LEFT:
-                    b->handleEvent();
+                    b->handleEvent(info);
+                    cliente.input_thread(info);
                 break;
                 default:
                 break;

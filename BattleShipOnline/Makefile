@@ -1,23 +1,26 @@
-#Copyright Notice:
-#The files within this zip file are copyrighted by Lazy Foo' Productions (2004-2014)
-#and may not be redistributed without written permission.
-
-#OBJS specifies which files to compile as part of the project
-OBJS = 01_hello_SDL.cpp Tablero.cpp Network/ClickSerializer.cpp Texture.cpp Barco.cpp Vector2D.cpp GameObjects/Button.cpp GameObjects/BattleShipObject.cpp GameStateMachine.cpp
-
-#CC specifies which compiler we're using
 CC = g++
-
-#COMPILER_FLAGS specifies the additional compilation options we're using
-# -w suppresses all warnings
-COMPILER_FLAGS = -w
-
+CFLAGS = -w -pthread
 #LINKER_FLAGS specifies the libraries we're linking against
 LINKER_FLAGS = -lSDL2 -lSDL2_image
 
-#OBJ_NAME specifies the name of our exectuable
-OBJ_NAME = 01_hello_SDL
+# Nombre de los archivos fuente
+CLIENT_SRC = Client.cpp
+SERVER_SRC = Server.cpp
 
-#This is the target that compiles our executable
-all : $(OBJS)
-	$(CC) $(OBJS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
+# Nombre de los ejecutables
+CLIENT_EXE = client
+SERVER_EXE = server
+
+# Dependencias para el cliente
+CLIENT_DEPS = Tablero.cpp Network/ClickSerializer.cpp Texture.cpp Barco.cpp Vector2D.cpp GameObjects/Button.cpp GameObjects/BattleShipObject.cpp GameStateMachine.cpp ClientServer.cpp Socket.cc
+
+# Dependencias para el servidor
+SERVER_DEPS = Tablero.cpp Network/ClickSerializer.cpp Texture.cpp Barco.cpp Vector2D.cpp GameObjects/Button.cpp GameObjects/BattleShipObject.cpp GameStateMachine.cpp ClientServer.cpp Socket.cc
+
+all: $(CLIENT_EXE) $(SERVER_EXE)
+
+$(CLIENT_EXE): $(CLIENT_SRC) $(CLIENT_DEPS)
+	$(CC) $(CFLAGS) $(CLIENT_DEPS) $(LINKER_FLAGS) -o $(CLIENT_EXE) $(CLIENT_SRC)
+
+$(SERVER_EXE): $(SERVER_SRC) $(SERVER_DEPS)
+	$(CC) $(CFLAGS) $(SERVER_DEPS) $(LINKER_FLAGS) -o $(SERVER_EXE) $(SERVER_SRC)
