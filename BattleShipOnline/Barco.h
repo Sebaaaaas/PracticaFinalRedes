@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include "Texture.h"
 #include "Tablero.h"
-#include "ClientServer.h"
+#include "Network/ClientServer.h"
 
 enum boat_place {
 	RED = 0,

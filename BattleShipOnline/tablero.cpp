@@ -5,8 +5,6 @@
 
 #include <iostream>
 
-
-
 Tablero::Tablero(Vector2D p, int w, int h, Texture* t) : pos(p), width(w), height(h), tex(t)
 {
     printf( "tablero creado!\n" );
