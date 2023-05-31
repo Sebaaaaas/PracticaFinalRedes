@@ -1,13 +1,10 @@
 #include "Button.h"
 
 #include "../Texture.h"
-#include <iostream>
 
-Button::Button(Vector2D* p, int w, int h, Texture* t, CallBack* func, Game* game) : BattleShipObject(p, w, h, t){
+Button::Button(Vector2D* p, int w, int h, Texture* t) : BattleShipObject(p, w, h, t){
 	m_currentFrame = MOUSE_OUT;
 	pMousePos = { 0, 0 };
-	callbackFunc = func;
-	m_game = game;
 }
 
 Button::~Button() {
@@ -25,28 +22,7 @@ void Button::render()
 }
 void Button::update()
 {
-	checkBounds();
 	
-}
-
-void Button::handleEvents(SDL_Event& event) {
-
-	int x, y;
-    SDL_GetMouseState(&x, &y);
-	pMousePos = { x, y};
-
-	if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT && m_currentFrame == MOUSE_OVER) {
-		clicked = true;
-		callbackFunc(m_game);
-		std::cout << "ey \n";
-	}
-	else {
-		clicked = false;
-	}
-}
-
-void Button::checkBounds()
-{
 	if (pMousePos.x < (this->destRect.x + this->destRect.w)
 		&& pMousePos.x > this->destRect.x
 		&& pMousePos.y < (this->destRect.y + this->destRect.h)
@@ -68,5 +44,19 @@ void Button::checkBounds()
 	else
 	{
 		m_currentFrame = MOUSE_OUT;
+	}
+}
+
+void Button::handleEvents(SDL_Event& event) {
+
+	int x, y;
+    SDL_GetMouseState(&x, &y);
+	pMousePos = { x, y};
+
+	if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
+		clicked = true;
+	}
+	else {
+		clicked = false;
 	}
 }

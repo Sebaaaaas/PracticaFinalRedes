@@ -4,23 +4,22 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <thread>
+#include <list>
 
-#include "Tablero.h"
-#include "Texture.h"
-#include "Barco.h"
-#include "Texture.h"
-#include "Vector2D.h"
-#include "GameStateMachine.h"
-#include "GameState.h"
 #include "Network/ClickSerializer.h"
 #include "Network/ClientServer.h"
-#include "GameObjects/Button.h"
+
+class Barco;
+class Button;
+class Vector2D;
+class Texture;
+class Tablero;
+class GameStateMachine;
+class GameState;
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
-
-class Button;
 
 class Game{
 public:
@@ -37,22 +36,16 @@ public:
 
     void handleEvents(ChatClient &cliente);
 
-    void crearBarco();
-
-    static void addBoat(Game* game);
-
-    inline void setBarcoCogido() {barcoCogido = false;};
+    // static void createBoat();
 
 private:
 
     bool quit = false;
-    bool barcoCogido = false;
 
     GameStateMachine* gsMachine = nullptr;
 
     Tablero *gameBoard = nullptr;
     Barco *b = nullptr;
-    Barco* currentBoat = nullptr;
     Vector2D* v = nullptr;
     Button *testButton = nullptr;
 
