@@ -4,17 +4,18 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <thread>
+#include <list>
 
-#include "Tablero.h"
-#include "Texture.h"
-#include "Barco.h"
-#include "Texture.h"
-#include "Vector2D.h"
-#include "GameStateMachine.h"
-#include "GameState.h"
 #include "Network/ClickSerializer.h"
 #include "Network/ClientServer.h"
-#include "GameObjects/Button.h"
+
+class Barco;
+class Button;
+class Vector2D;
+class Texture;
+class Tablero;
+class GameStateMachine;
+class GameState;
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 640;
