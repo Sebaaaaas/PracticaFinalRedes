@@ -11,6 +11,9 @@ class Texture;
 const int PIXELES_COLUMNA = 46;
 const int PIXELES_FILA = 40;
 
+const int OFFSET_X = 100;
+const int OFFSET_Y = 90;
+
 class Tablero {
     
 public:

@@ -1,14 +1,13 @@
 #include "Barco.h"
 
-#include "../Network/ClickSerializer.h"
-
 #include <iostream>
 
-Barco::Barco(Vector2D* p, int w, int h, int longitud_, Texture* t, Tablero* tab) : BattleShipObject(p, w, h, t), longitud(longitud_), currentTablero(tab)
+Barco::Barco(Vector2D* p, int w, int h, int longitud_, Texture* t, Tablero* tab, Game* game) : BattleShipObject(p, w, h, t), longitud(longitud_), currentTablero(tab)
 {
     //SDL_ShowCursor(SDL_DISABLE);
     boatClick = new Click("CLICK", 0, 0);
     clickDeserialize = new Click("CLICK", 0, 0);
+    m_game = game;
 }
 
 void Barco::update()
@@ -17,14 +16,13 @@ void Barco::update()
         int x, y;
         SDL_GetMouseState(&x, &y);
         pos = new Vector2D(x,y);
-
         hayHueco();
     }
 }
 
 void Barco::render()
 {
-    tex->renderFrame(destRect,0, current_boat_place);
+    tex->renderFrame(getRect(),0, current_boat_place);
 }
 
 void Barco::handleEvent(messageInfo& info)
@@ -41,6 +39,7 @@ void Barco::handleEvent(messageInfo& info)
         info.horizontal = horizontal;
         info.longitud = longitud;
         info.isMessage = true;
+        m_game->setBarcoCogido();
     }
 	
 }
@@ -48,10 +47,10 @@ void Barco::handleEvent(messageInfo& info)
 void Barco::hayHueco(){
 
     puedeColocarse = true;
-    int columnaActual = (pos->getX()- 100)/PIXELES_COLUMNA;
-    int filaActual = (pos->getY() - 90)/PIXELES_FILA;
+    int columnaActual = (pos->getX()- OFFSET_X)/PIXELES_COLUMNA;
+    int filaActual = (pos->getY() - OFFSET_Y)/PIXELES_FILA;
     //comprobamos que no se sale por los lados del tablero(x >> columnas, y >> filas)
-    if((pos->getX()-100) < 0 || (columnaActual>= currentTablero->getColumnas()) || (pos->getY() - 90) < 0 || (filaActual >= currentTablero->getFilas())
+    if((pos->getX()-OFFSET_X) < 0 || (columnaActual>= currentTablero->getColumnas()) || (pos->getY() - OFFSET_Y) < 0 || (filaActual >= currentTablero->getFilas())
         || (horizontal && ((columnaActual + (longitud-1)) >= currentTablero->getColumnas()))
         || (!horizontal && ((filaActual+ (longitud -1)) >= currentTablero->getFilas())))
         {
@@ -93,8 +92,8 @@ void Barco::hayHueco(){
 
 void Barco::colocaBarco()
 {
-    int columnaActual = (pos->getX()- 100)/PIXELES_COLUMNA;
-    int filaActual = (pos->getY() - 90)/PIXELES_FILA;
+    int columnaActual = (pos->getX()- OFFSET_X)/PIXELES_COLUMNA;
+    int filaActual = (pos->getY() - OFFSET_Y)/PIXELES_FILA;
     int newPosX = (columnaActual*PIXELES_COLUMNA)+110;
     int newPosY = (filaActual*PIXELES_FILA)+100;
     pos = new Vector2D(newPosX, newPosY);

@@ -3,6 +3,8 @@
 #include "BattleShipObject.h"
 #include "../Vector2D.h"
 
+class Game;
+
 enum button_state
 {
 	MOUSE_OUT = 0,
@@ -10,12 +12,16 @@ enum button_state
 	CLICKED = 2
 };
 
+typedef void CallBack(Game* game);
+
 class Button : public BattleShipObject
 {
 	
 public:
-	Button(Vector2D* p, int w, int h, Texture* t);
+	Button(Vector2D* p, int w, int h, Texture* t, CallBack func, Game* game);
 	~Button();
+
+	void checkBounds();
 
 	void render();
 	void update();
@@ -25,6 +31,9 @@ private:
 	bool clicked = false;
 	bool m_bReleased = false;
 	button_state m_currentFrame;
+
+	CallBack* callbackFunc = nullptr;
+	Game* m_game = nullptr;
 
 	SDL_Point pMousePos;
 

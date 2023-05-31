@@ -3,6 +3,7 @@
 #include "../Vector2D.h"
 #include "../Texture.h"
 #include "../Tablero.h"
+#include "../Game.h"
 #include "../Network/ClientServer.h"
 #include "BattleShipObject.h"
 
@@ -13,11 +14,12 @@ enum boat_place {
 	GREEN = 1
 };
 class Click;
+class Game;
 
 class Barco : public BattleShipObject{
 public:
 
-    Barco(Vector2D* p, int w, int h, int longitud_, Texture* t, Tablero* tab);
+    Barco(Vector2D* p, int w, int h, int longitud_, Texture* t, Tablero* tab, Game* game);
     inline int getX(){return pos->getX();};
     inline int getY(){return pos->getY();};
     inline int getLongitud(){return longitud;};
@@ -28,7 +30,7 @@ public:
     void handleEvent(messageInfo& info);
 	void handleEvents(SDL_Event& event){};
     
-    SDL_Rect getRect() const;
+    //SDL_Rect getRect() const;
     void hayHueco();
     void colocaBarco();
     void rotaBarco();
@@ -47,5 +49,7 @@ private:
     Tablero* currentTablero = nullptr;
     bool colocado = false;
     bool puedeColocarse = true;
+
+    Game* m_game = nullptr;
 };
 

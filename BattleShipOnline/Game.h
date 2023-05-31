@@ -36,16 +36,22 @@ public:
 
     void handleEvents(ChatClient &cliente);
 
-    // static void createBoat();
+    void crearBarco();
+
+    static void addBoat(Game* game);
+
+    inline void setBarcoCogido() { barcoCogido = false; };
 
 private:
 
     bool quit = false;
+    bool barcoCogido = false;
 
     GameStateMachine* gsMachine = nullptr;
 
     Tablero *gameBoard = nullptr;
     Barco *b = nullptr;
+    Barco* currentBoat = nullptr;
     Vector2D* v = nullptr;
     Button *testButton = nullptr;
 

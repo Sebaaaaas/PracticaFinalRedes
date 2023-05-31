@@ -17,7 +17,7 @@ public:
 	virtual ~BattleShipObject();
 
 	virtual void render();
-	void update();
+	virtual void update();
 	virtual void handleEvents(SDL_Event& event);
 
 	virtual SDL_Rect getRect();

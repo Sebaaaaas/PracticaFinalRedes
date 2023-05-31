@@ -2,6 +2,7 @@
 
 void ChatMessage::to_bin()
 {
+    
     alloc_data(MESSAGE_SIZE);
     memset(_data, 0, MESSAGE_SIZE);
     char* tmp = _data;

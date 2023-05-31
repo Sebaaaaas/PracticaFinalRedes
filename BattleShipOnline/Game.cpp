@@ -22,11 +22,8 @@ Game::Game()
 
     gameBoard = new Tablero(Vector2D(0, 0), SCREEN_WIDTH, SCREEN_HEIGHT, tableroText);
 
-    v = new Vector2D(0,0);
-    b = new Barco(v, 80, 24, 2, boatText, gameBoard);
-
     v = new Vector2D(30,0);
-    testButton = new Button(v, 60, 60, botonTex);
+    testButton = new Button(v, 60, 60, botonTex, addBoat, this);
 }
 
 void Game::closeSDL()
@@ -45,19 +42,9 @@ void Game::closeSDL()
 
 void Game::run(ChatClient &cliente)
 {
-    
-    
-
-    
     // INICIO DEL TABLERO REAL, 100 en X y 90 en Y
     // 460 de ancho 320 de largo
     //  46 por columna    40 por fila
-
-    int fd = open("binarios", O_CREAT | O_RDWR | O_TRUNC, 0644);
-    close(fd);
-    
-    Click *test_deserialize = new Click("CLICK", 0, 0);
-    Click *test_click = new Click("CLICK", 0, 0);
 
     while (!quit)
     {
@@ -65,6 +52,8 @@ void Game::run(ChatClient &cliente)
         update();
         render();
     }
+
+    closeSDL();
 }
 
 void Game::render()
@@ -72,7 +61,12 @@ void Game::render()
     SDL_RenderClear(gRender);
 
     gameBoard->render();
-    b->render();
+
+    if (boats.size() != 0) {
+        for (auto a : boats) {
+            a->render();
+        }
+    }
 
     testButton->render();
 
@@ -81,7 +75,7 @@ void Game::render()
 
 void Game::update()
 {
-    b->update();
+    if (currentBoat != nullptr) currentBoat->update();
     testButton->update();
 }
 
@@ -99,7 +93,7 @@ void Game::handleEvents(ChatClient &cliente)
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 switch(e.button.button){
                 case SDL_BUTTON_LEFT:
-                    b->handleEvent(info);
+                    if (currentBoat != nullptr) currentBoat->handleEvent(info);
                     cliente.input_thread(info);
                 break;
                 default:
@@ -113,8 +107,17 @@ void Game::handleEvents(ChatClient &cliente)
         }
 }
 
-// void Game::createBoat()
-// {
-//         boats.push_back(new Barco(Vector2D(0, 0), 80, 24, boatText, gameBoard));
+void Game::crearBarco()
+{
+    if (!barcoCogido) {
+        std::cout << boats.size() << "\n";
+        currentBoat = new Barco(v , 80, 24, 2, boatText, gameBoard, this);
+        boats.push_back(currentBoat);
+        barcoCogido = true;
+    }
+}
 
-// }
+void Game::addBoat(Game* game)
+{
+    game->crearBarco();
+}

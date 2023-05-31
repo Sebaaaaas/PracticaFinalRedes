@@ -30,7 +30,11 @@ void BattleShipObject::handleEvents(SDL_Event& event)
 }
 
 SDL_Rect BattleShipObject::getRect(){
-	return destRect;
+	SDL_Rect rect;
+	rect.x = pos->getX(); rect.y = pos->getY();
+	rect.w = w, rect.h = h;
+
+	return rect;
 }
 
 

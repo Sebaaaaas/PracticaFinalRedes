@@ -25,7 +25,8 @@ CLIENT_DEPS = Tablero.cpp \
 				Game.cpp
 
 # Dependencias para el servidor
-SERVER_DEPS = Network/ClientServer.cpp 
+SERVER_DEPS = 	Network/Socket.cc \
+				Network/ClientServer.cpp 
 
 
 all: $(CLIENT_EXE) $(SERVER_EXE)
