@@ -21,19 +21,53 @@ Game::Game()
 
 	}
 
-    gameBoard = new Tablero(new Vector2D(0, 0), SCREEN_WIDTH, SCREEN_HEIGHT, arrayTex[BOARD], this);
+    gameBoard = new Tablero(new Vector2D(0, 0), 640, 480, arrayTex[BOARD], this);
     setupGameObjects.push_back(gameBoard);
     attackGameObjects.push_back(gameBoard);
 
     v = new Vector2D(30,0);
-    testButton = new Button(v, 60, 60, arrayTex[BUTTON], addBoat, this);
+    testButton = new Button(v, 60, 60, {0,1}, {0,3}, arrayTex[BUTTON], addBoat, this);
 
     v = new Vector2D(200, 0);
-    testButton2 = new Button(v, 60, 60, arrayTex[BUTTON], attack, this);
+    testButton2 = new Button(v, 60, 60, {0,1}, {0,3}, arrayTex[BUTTON], attack, this);
     attackGameObjects.push_back(testButton2);
 
     setupGameObjects.push_back(testButton);
     setupGameObjects.push_back(testButton2);
+
+    //Botones de colocar barcos de distintos tamaños
+
+    int bw = 60, bh = 44;
+    int lonAct = bw;
+    std::pair<int, int> texPos = {0,1};
+    std::pair<int, int> texPos2 = {0,0};
+
+    lonAct = bw * barcosAPoner.front();
+    v = new Vector2D(SCREEN_WIDTH - lonAct - 20, bh + 100);
+    botonBarco = new Button(v, lonAct, bh, texPos, texPos2, arrayTex[BOAT_PLACE], addBoat, this);
+
+    // lonAct = bw * 4;
+    // v = new Vector2D(SCREEN_WIDTH  - lonAct - 20, bh * 2 + 105);
+    // botonBarco4 = new Button(v, lonAct, bh, texPos, texPos2, arrayTex[BOAT_PLACE], addBoat, this);
+
+    // lonAct = bw * 3;
+    // v = new Vector2D(SCREEN_WIDTH - lonAct - 20, bh * 3 + 110);
+    // botonBarco3 = new Button(v, lonAct, bh, texPos, texPos2, arrayTex[BOAT_PLACE], addBoat, this);
+
+    // lonAct = bw * 3;
+    // v = new Vector2D(SCREEN_WIDTH - lonAct - 20, bh * 4 + 115);
+    // botonBarco3_2 = new Button(v, lonAct, bh, texPos, texPos2, arrayTex[BOAT_PLACE], addBoat, this);
+
+    // lonAct = bw * 2;
+    // v = new Vector2D(SCREEN_WIDTH - lonAct - 20, bh * 5 + 120);
+    // botonBarco2 = new Button(v, lonAct, bh, texPos, texPos2, arrayTex[BOAT_PLACE], addBoat, this);
+
+    setupGameObjects.push_back(botonBarco);
+    // setupGameObjects.push_back(botonBarco4);
+    // setupGameObjects.push_back(botonBarco3);
+    // setupGameObjects.push_back(botonBarco3_2);
+    // setupGameObjects.push_back(botonBarco2);
+
 }
 
 void Game::closeSDL()
@@ -92,10 +126,6 @@ void Game::render()
         }
     }
 
-    // for(auto g: setupGameObjects){
-    //         g->render();
-    // }
-
     SDL_RenderPresent(gRender);
 }
 
@@ -112,9 +142,6 @@ void Game::update()
         }
     }
 
-    // for(auto g: setupGameObjects){
-    //         g->update();
-    // }
 }
 
 void Game::handleEvents(ChatClient &cliente)
@@ -152,9 +179,12 @@ void Game::handleEvents(ChatClient &cliente)
 void Game::crearBarco()
 {
     if (!barcoCogido) {
-        currentBoat = new Barco(v , 80, 24, 2, arrayTex[BOAT_PLACE], gameBoard, this);
+        currentBoat = new Barco(v , 40, 24, barcosAPoner.front(), arrayTex[BOAT_PLACE], gameBoard, this);
         setupGameObjects.push_back(currentBoat);
         barcoCogido = true;
+
+        if(!barcosAPoner.empty())
+            barcosAPoner.pop_front();
     }
 }
 

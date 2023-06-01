@@ -2,7 +2,7 @@
 
 #include "../Texture.h"
 
-Button::Button(Vector2D* p, int w, int h, Texture* t, CallBack* func, Game* game) : BattleShipObject(p, w, h, t){
+Button::Button(Vector2D* p, int w, int h, std::pair<int, int> normalTex_, std::pair<int, int> mouseOverTex_, Texture* t, CallBack* func, Game* game) : BattleShipObject(p, w, h, t), normalTex(normalTex_), mouseOverTex(mouseOverTex_){
 	m_currentFrame = MOUSE_OUT;
 	pMousePos = { 0, 0 };
 	callbackFunc = func;
@@ -15,11 +15,11 @@ Button::~Button() {
 void Button::render()
 {
 	if(m_currentFrame == MOUSE_OVER)
-		tex->renderFrame(destRect, 0, 3);	
+		tex->renderFrame(destRect, mouseOverTex.first, mouseOverTex.second);	
 	else if(m_currentFrame == CLICKED)
-		tex->renderFrame(destRect, 1, 1);
+		tex->renderFrame(destRect, mouseOverTex.first, mouseOverTex.second);
 	else
-		tex->renderFrame(destRect, 0, 1);
+		tex->renderFrame(destRect, normalTex.first, normalTex.second);
 
 }
 void Button::update()

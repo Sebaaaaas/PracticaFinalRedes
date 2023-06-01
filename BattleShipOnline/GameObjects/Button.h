@@ -18,7 +18,7 @@ class Button : public BattleShipObject
 {
 	
 public:
-	Button(Vector2D* p, int w, int h, Texture* t, CallBack func, Game* game);
+	Button(Vector2D* p, int w, int h, std::pair<int, int> normalTex, std::pair<int, int> mouseOverTex, Texture* t, CallBack func, Game* game);
 	~Button();
 
 	void checkBounds();
@@ -26,6 +26,8 @@ public:
 	void render();
 	void update();
 	void handleEvents(SDL_Event& event);
+
+	inline Texture* returnTex(){ return tex;}
 
 private:
 	bool clicked = false;
@@ -36,5 +38,9 @@ private:
 	Game* m_game = nullptr;
 
 	SDL_Point pMousePos;
+
+	std::pair<int,int> normalTex;
+	std::pair<int,int> mouseOverTex;
+
 
 };

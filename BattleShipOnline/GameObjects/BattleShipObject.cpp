@@ -5,7 +5,7 @@
 
 BattleShipObject::BattleShipObject(Vector2D* pos_, int w_, int h_, Texture* tex_) 
 : pos(pos_), w(w_), h(h_), tex(tex_){
-
+	printf("h: %d\n", h_);
 	destRect.w = w; destRect.h = h;
 	destRect.x = pos->getX(); destRect.y = pos->getY();
 

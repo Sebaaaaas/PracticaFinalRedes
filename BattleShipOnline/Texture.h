@@ -36,6 +36,9 @@ public:
 
    void rotate(float degrees);
    void rotateTo(float degrees);
+   inline void setW(uint w_){w = w_;};
+   inline void setH(uint h_){h = h_;};
+
 
    void load(string filename, uint numRows = 1, uint numCols = 1);
    void render(const SDL_Rect& rect, SDL_RendererFlip flip = SDL_FLIP_NONE) const;

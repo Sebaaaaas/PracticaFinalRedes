@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Barco::Barco(Vector2D* p, int w, int h, int longitud_, Texture* t, Tablero* tab, Game* game) : BattleShipObject(p, w, h, t), longitud(longitud_), currentTablero(tab)
+Barco::Barco(Vector2D* p, int w, int h, int longitud_, Texture* t, Tablero* tab, Game* game) : BattleShipObject(p, w * longitud_, h, t), longitud(longitud_), currentTablero(tab)
 {
     //SDL_ShowCursor(SDL_DISABLE);
     boatClick = new Click("CLICK", 0, 0);
@@ -49,7 +49,7 @@ void Barco::handleEvents(SDL_Event& event)
             }
         }
     }
-    else if(!colocado && e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE){
+    else if(!colocado && event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE){
         rotaBarco();
     }
 }

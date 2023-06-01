@@ -18,8 +18,8 @@ class Tablero;
 class BattleShipObject;
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 960;
+const int SCREEN_HEIGHT = 720;
 
 const int NUM_TEXTURES = 5;
 
@@ -76,6 +76,8 @@ public:
 
     static void addBoat(Game* game);
 
+    // static void (Game* game);
+
     inline void setBarcoCogido() { barcoCogido = false; };
 
     void cambiaFase();
@@ -101,6 +103,14 @@ private:
     Vector2D* v = nullptr;
     Button *testButton = nullptr;
     Button *estoyListo = nullptr; //para dar click y empezar a jugar
+    
+    Button *botonBarco = nullptr; //cambia de textura para representar el siguiente barco disponible
+
+    // Button *botonBarco5 = nullptr;
+    // Button *botonBarco4 = nullptr;
+    // Button *botonBarco3 = nullptr;
+    // Button *botonBarco3_2 = nullptr;
+    // Button *botonBarco2 = nullptr;
 
     Button *testButton2 = nullptr;
 
@@ -109,6 +119,8 @@ private:
 
     std::list<BattleShipObject*> setupGameObjects;
     std::list<BattleShipObject*> attackGameObjects;
+
+    std::list<int> barcosAPoner{5, 4, 3, 3, 2};
 
     Texture* arrayTex[NUM_TEXTURES];
 
