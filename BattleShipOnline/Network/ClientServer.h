@@ -9,12 +9,14 @@
 #include "../Vector2D.h"
 #include "Socket.h"
 
+class Game;
+
 typedef struct {
     Vector2D pos = Vector2D(0, 0);
     bool isMessage = false;
     bool horizontal = true;
     int16_t longitud = 0;
-} messageInfo;
+} setupInfo;
 class ChatMessage : public Serializable
 {
 public:
@@ -24,11 +26,12 @@ public:
     enum MessageType
     {
         LOGIN = 0,
-        MESSAGE = 1,
-        LOGOUT = 2
+        SETUP = 1,
+        ATTACK = 2,
+        LOGOUT = 3
     };
     ChatMessage() {};
-    ChatMessage(const std::string& n, messageInfo m) :message(m) {
+    ChatMessage(const std::string& n, setupInfo m) :message(m) {
         std::strncpy(nick, n.c_str(), MAX_NAME - 1);
         nick[MAX_NAME - 1] = '\0';
         std::cout << nick << " es el nick";
@@ -37,7 +40,7 @@ public:
     int from_bin(char* bobj);
     uint8_t type;
     char nick[MAX_NAME];
-    messageInfo message;
+    setupInfo message;
 };
 
 class ChatServer {
@@ -64,14 +67,16 @@ public:
 
     void logout();
 
-    void input_thread(messageInfo& info);
+    void input_thread(setupInfo& info);
 
-    void net_thread();
+    void net_thread(Game *game);
 
 private:
 
     Socket socket;
 
     std::string nick;
+
+    Game *gameInstance;
 
 };

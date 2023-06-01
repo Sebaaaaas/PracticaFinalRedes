@@ -2,7 +2,7 @@
 
 #include "../Vector2D.h"
 #include "../Texture.h"
-#include "../Tablero.h"
+#include "Tablero.h"
 #include "../Game.h"
 #include "../Network/ClientServer.h"
 #include "BattleShipObject.h"
@@ -27,7 +27,7 @@ public:
 
     void update();
     void render();
-    void handleEvent(messageInfo& info);
+    //void handleEvent(setupInfo& info);
 	void handleEvents(SDL_Event& event);
     
     //SDL_Rect getRect() const;

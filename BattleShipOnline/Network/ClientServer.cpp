@@ -1,4 +1,6 @@
 #include "ClientServer.h"
+#include "../Game.h"
+
 
 void ChatMessage::to_bin()
 {
@@ -28,12 +30,12 @@ int ChatMessage::from_bin(char* bobj)
     memcpy(&type, tmp, sizeof(uint8_t));
     tmp += sizeof(uint8_t);
 
-    if (type == ChatMessage::MESSAGE) std::cout << " Tipo : Mensaje\n";
+    //if (type == ChatMessage::SETUP) std::cout << " Tipo : Mensaje\n";
 
     memcpy(nick, tmp, sizeof(char) * 20);
     nick[19] = '0';
     tmp += sizeof(char) * 20;
-    std::cout << "Nick : " << nick << "\n";
+    //std::cout << "Nick : " << nick << "\n";
     int16_t x;
     memcpy(&x, tmp, sizeof(int16_t));
     tmp += sizeof(int16_t);
@@ -41,12 +43,12 @@ int ChatMessage::from_bin(char* bobj)
     memcpy(&y, tmp, sizeof(int16_t));
     tmp += sizeof(int16_t);
     message.pos = Vector2D(x, y);
-    std::cout << "Pos : " << "X " << message.pos.getX() << " Y " << message.pos.getY() << "\n";
+    //std::cout << "Pos : " << "X " << message.pos.getX() << " Y " << message.pos.getY() << "\n";
     memcpy(&message.horizontal, tmp, sizeof(bool));
     tmp += sizeof(bool);
-    std::cout << "Horizontal : " << message.horizontal << "\n";
+    //std::cout << "Horizontal : " << message.horizontal << "\n";
     memcpy(&message.longitud, tmp, sizeof(int16_t));
-    std::cout << "Longitud : " << message.longitud << "\n";
+    //std::cout << "Longitud : " << message.longitud << "\n";
     return 0;
 }
 
@@ -63,7 +65,7 @@ void ChatServer::do_messages()
         //Recibir Mensajes en y en función del tipo de mensaje
         // - LOGIN: Añadir al vector clients
         // - LOGOUT: Eliminar del vector clients
-        // - MESSAGE: Reenviar el mensaje a todos los clientes (menos el emisor)
+        // - SETUP: Reenviar el mensaje a todos los clientes (menos el emisor)
         ChatMessage msg;
         Socket *sock;
         socket.recv(msg, sock);
@@ -92,7 +94,7 @@ void ChatServer::do_messages()
             }
             break;
 
-            case ChatMessage::MESSAGE:
+            case ChatMessage::SETUP:
             {
                 for (auto it = clients.begin(); it != clients.end(); ++it) {
                     if (!(**it == *sock))
@@ -109,7 +111,7 @@ void ChatServer::do_messages()
 
 void ChatClient::login()
 {
-    messageInfo msg;
+    setupInfo msg;
 
     ChatMessage em(nick, msg);
     em.type = ChatMessage::LOGIN;
@@ -121,7 +123,7 @@ void ChatClient::login()
 
 void ChatClient::logout()
 {
-    messageInfo msg;
+    setupInfo msg;
 
     ChatMessage om(nick, msg);
     om.type = ChatMessage::LOGOUT;
@@ -131,17 +133,18 @@ void ChatClient::logout()
     socket.send(om, socket);
 }
 
-void ChatClient::input_thread(messageInfo& info)
+void ChatClient::input_thread(setupInfo& info)
 {
     if (info.isMessage) {
+        std::cout << "Enviando mensaje...\n";
         ChatMessage im = ChatMessage(nick, info);
-        im.type = ChatMessage::MESSAGE;
+        im.type = ChatMessage::SETUP;
         info.isMessage = false;
         socket.send(im, socket);
     }
 }
 
-void ChatClient::net_thread()
+void ChatClient::net_thread(Game* game)
 {
     Socket* s = new Socket(socket);
     ChatMessage socketMessage;
@@ -152,6 +155,8 @@ void ChatClient::net_thread()
         socket.recv(socketMessage, s);
 
         std::cout << socketMessage.nick << ": " << socketMessage.message.pos.getX() << " " << socketMessage.message.pos.getY() << " " << socketMessage.message.horizontal << " " << socketMessage.message.longitud << "\n";
+
+        game->captureServerMessage(socketMessage.message);
 
     }
 }

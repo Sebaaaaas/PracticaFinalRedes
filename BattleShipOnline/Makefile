@@ -12,11 +12,12 @@ CLIENT_EXE = client
 SERVER_EXE = server
 
 # Dependencias para el cliente
-CLIENT_DEPS = Tablero.cpp \
-				Texture.cpp \
+CLIENT_DEPS =	Texture.cpp \
 				Vector2D.cpp \
 				GameObjects/Barco.cpp \
 				GameObjects/Button.cpp \
+				GameObjects/Tablero.cpp \
+				GameObjects/Hitmarker.cpp \
 				GameObjects/BattleShipObject.cpp \
 				Network/ClickSerializer.cpp \
 				Network/ClientServer.cpp \
@@ -24,8 +25,16 @@ CLIENT_DEPS = Tablero.cpp \
 				Game.cpp
 
 # Dependencias para el servidor
-SERVER_DEPS = 	Network/Socket.cc \
-				Network/ClientServer.cpp 
+SERVER_DEPS = 	Texture.cpp \
+				Network/Socket.cc \
+				Network/ClientServer.cpp \
+				Game.cpp \
+				GameObjects/Tablero.cpp \
+				GameObjects/Barco.cpp \
+				GameObjects/Button.cpp \
+				GameObjects/Hitmarker.cpp \
+				GameObjects/BattleShipObject.cpp \
+				Network/ClickSerializer.cpp \
 
 
 all: $(CLIENT_EXE) $(SERVER_EXE)

@@ -2,7 +2,8 @@
 
 #include "GameObjects/Barco.h"
 #include "GameObjects/Button.h"
-#include "Tablero.h"
+#include "GameObjects/Tablero.h"
+#include "GameObjects/Hitmarker.h"
 #include "Texture.h"
 #include "Vector2D.h"
 
@@ -14,14 +15,25 @@ Game::Game()
     gRender = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(gRender, 94, 186, 125, 255);
 
-    tableroText = new Texture(gRender, "Imgs/tablero.jpg", 1, 1);
-    boatText = new Texture(gRender, "Imgs/place_Boat.png", 1, 2);
-    botonTex = new Texture(gRender, "Imgs/radio_button.png", 2, 4);
+    for (int i = 0; i < NUM_TEXTURES; ++i) { 
+		const TextureDescription& desc = TEXT_DESCR[i];
+		arrayTex[i] = new Texture(gRender, desc.filename, desc.rows, desc.cols);
 
-    gameBoard = new Tablero(Vector2D(0, 0), SCREEN_WIDTH, SCREEN_HEIGHT, tableroText);
+	}
+
+    gameBoard = new Tablero(new Vector2D(0, 0), SCREEN_WIDTH, SCREEN_HEIGHT, arrayTex[BOARD], this);
+    setupGameObjects.push_back(gameBoard);
+    attackGameObjects.push_back(gameBoard);
 
     v = new Vector2D(30,0);
-    testButton = new Button(v, 60, 60, botonTex, addBoat, this);
+    testButton = new Button(v, 60, 60, arrayTex[BUTTON], addBoat, this);
+
+    v = new Vector2D(200, 0);
+    testButton2 = new Button(v, 60, 60, arrayTex[BUTTON], attack, this);
+    attackGameObjects.push_back(testButton2);
+
+    setupGameObjects.push_back(testButton);
+    setupGameObjects.push_back(testButton2);
 }
 
 void Game::closeSDL()
@@ -46,6 +58,17 @@ void Game::run(ChatClient &cliente)
 
     while (!quit)
     {
+        if(messageReceived){
+            messageReceived = false;
+            //std::cout << "Game.cpp X : "<< serverInfo.pos.getX() << " Y : " << serverInfo.pos.getY() << "\n";
+            if(setup){
+                gameBoard->processEnemy(serverInfo);
+            }
+            else if(!setup && !attackPhase){
+                std::cout << "serverInfo X " << serverInfo.pos.getX() << " Y " << serverInfo.pos.getY() << "\n";
+                gameBoard->processDefense(serverInfo);
+            }
+        }
         handleEvents(cliente);
         update();
         render();
@@ -58,49 +81,69 @@ void Game::render()
 {
     SDL_RenderClear(gRender);
 
-    gameBoard->render();
-
-    if (boats.size() != 0) {
-        for (auto a : boats) {
-            a->render();
+    if(attackPhase){
+        for(auto g: attackGameObjects){
+            g->render();
+        }
+    }
+    else{
+        for(auto g: setupGameObjects){
+            g->render();
         }
     }
 
-    testButton->render();
+    // for(auto g: setupGameObjects){
+    //         g->render();
+    // }
 
     SDL_RenderPresent(gRender);
 }
 
 void Game::update()
 {
-    if (currentBoat != nullptr) currentBoat->update();
-    testButton->update();
+    if(attackPhase){
+        for(auto g: attackGameObjects){
+            g->update();
+        }
+    }
+    else{
+        for(auto g: setupGameObjects){
+            g->update();
+        }
+    }
+
+    // for(auto g: setupGameObjects){
+    //         g->update();
+    // }
 }
 
 void Game::handleEvents(ChatClient &cliente)
 {
     SDL_Event e;
 
-    messageInfo info;
         while (SDL_PollEvent(&e) != 0)
         {
             if (e.type == SDL_QUIT)
             {
                 quit = true;
             }
-            else if(e.type == SDL_MOUSEBUTTONDOWN){
-                switch(e.button.button){
-                case SDL_BUTTON_LEFT:
-                    if (currentBoat != nullptr) currentBoat->handleEvent(info);
+            // else{
+            //     for(auto g: setupGameObjects){
+            //         g->handleEvents(e);
+            //         cliente.input_thread(info);
+            //     }
+            // }
+            else if(attackPhase){
+                for(auto g: attackGameObjects){
+                    g->handleEvents(e);
                     cliente.input_thread(info);
-                break;
-                default:
-                break;
                 }
             }
-            else{
-                testButton->handleEvents(e);
-                if (currentBoat != nullptr) currentBoat->handleEvents(e);
+            else if(!attackPhase){
+                for(auto g: setupGameObjects){
+                    g->handleEvents(e);
+                    cliente.input_thread(info);
+                }
             }
             
         }
@@ -109,9 +152,8 @@ void Game::handleEvents(ChatClient &cliente)
 void Game::crearBarco()
 {
     if (!barcoCogido) {
-        std::cout << boats.size() << "\n";
-        currentBoat = new Barco(v , 80, 24, 2, boatText, gameBoard, this);
-        boats.push_back(currentBoat);
+        currentBoat = new Barco(v , 80, 24, 2, arrayTex[BOAT_PLACE], gameBoard, this);
+        setupGameObjects.push_back(currentBoat);
         barcoCogido = true;
     }
 }
@@ -134,4 +176,53 @@ void Game::comienzaPartida(){
     //if(todos los barcos estan colocados)
     //cambiaFase();
 
+}
+
+void Game::createMessage(const setupInfo &boatInfo)
+{
+  info = boatInfo;
+}
+
+void Game::changeAtacar(){
+    setup = false;
+    attackPhase = !attackPhase;
+    if(!attackPhase){
+        std::cout << "Estas en defensa \n";
+    }
+    else{
+        std::cout << "Estas en ataque \n";
+    }
+}
+
+void Game::captureServerMessage(setupInfo i)
+{
+    std::cout << "ServerMessage X " << i.pos.getX() << " Y " << i.pos.getY() << "\n" ; 
+    serverInfo = i;
+    messageReceived = true;
+}
+
+void Game::crearCasillaHitDefense(bool hit, Vector2D* pos)
+{
+    //currentBoat = new Barco(v , 80, 24, 2, arrayTex[BOAT_PLACE], gameBoard, this);
+    if(hit){
+        setupGameObjects.push_back(new Hitmarker(pos, PIXELES_COLUMNA, PIXELES_FILA,arrayTex[HIT]));
+    }
+    else{
+        setupGameObjects.push_back(new Hitmarker(pos, PIXELES_COLUMNA, PIXELES_FILA,arrayTex[NO_HIT]));
+    }
+}
+
+void Game::crearCasillaHitAttack(bool hit, Vector2D *pos)
+{
+    if(hit){
+        attackGameObjects.push_back(new Hitmarker(pos, PIXELES_COLUMNA, PIXELES_FILA,arrayTex[HIT]));
+    }
+    else{
+        attackGameObjects.push_back(new Hitmarker(pos, PIXELES_COLUMNA, PIXELES_FILA,arrayTex[NO_HIT]));
+    }
+}
+
+void Game::attack(Game *game)
+{
+    game->changeAtacar();
 }

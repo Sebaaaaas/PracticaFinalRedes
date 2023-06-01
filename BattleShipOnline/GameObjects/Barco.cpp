@@ -28,27 +28,28 @@ void Barco::render()
         tex->renderFrame(getRect(),0, current_boat_place, 90);
 }
 
-void Barco::handleEvent(messageInfo& info)
+void Barco::handleEvents(SDL_Event& event)
 {
-	// creo un evento auxiliar
-	
-    int x, y;
-    SDL_GetMouseState(&x, &y);
-    boatClick->setClickPos(x, y);
-    boatClick->toFileAndBack(clickDeserialize);
-    if(puedeColocarse && !colocado) {
-        colocaBarco();
-        info.pos = Vector2D(x, y);
-        info.horizontal = horizontal;
-        info.longitud = longitud;
-        info.isMessage = true;
-        m_game->setBarcoCogido();
+    if(event.type == SDL_MOUSEBUTTONDOWN){
+        if(event.button.button == SDL_BUTTON_LEFT){
+        // creo un evento auxiliar
+            setupInfo info;
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+            boatClick->setClickPos(x, y);
+            boatClick->toFileAndBack(clickDeserialize);
+            if(puedeColocarse && !colocado) {
+                colocaBarco();
+                info.pos = Vector2D(x, y);
+                info.horizontal = horizontal;
+                info.longitud = longitud;
+                info.isMessage = true;
+                m_game->setBarcoCogido();
+                m_game->createMessage(info);
+            }
+        }
     }
-	
-}
-
-void Barco::handleEvents(SDL_Event& e){
-    if(!colocado && e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE){
+    else if(!colocado && e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE){
         rotaBarco();
     }
 }
