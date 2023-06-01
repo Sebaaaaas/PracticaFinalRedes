@@ -22,7 +22,10 @@ void Barco::update()
 
 void Barco::render()
 {
-    tex->renderFrame(getRect(),0, current_boat_place);
+    if(horizontal)
+        tex->renderFrame(getRect(),0, current_boat_place);
+    else
+        tex->renderFrame(getRect(),0, current_boat_place, 90);
 }
 
 void Barco::handleEvent(messageInfo& info)
@@ -42,6 +45,12 @@ void Barco::handleEvent(messageInfo& info)
         m_game->setBarcoCogido();
     }
 	
+}
+
+void Barco::handleEvents(SDL_Event& e){
+    if(!colocado && e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE){
+        rotaBarco();
+    }
 }
 
 void Barco::hayHueco(){
@@ -114,4 +123,8 @@ void Barco::colocaBarco()
         }
     }
     colocado = true;
+}
+
+void Barco::rotaBarco(){
+    horizontal = !horizontal;
 }

@@ -5,8 +5,6 @@
 #include "Tablero.h"
 #include "Texture.h"
 #include "Vector2D.h"
-#include "GameStateMachine.h"
-#include "GameState.h"
 
 Game::Game()
 {
@@ -100,9 +98,10 @@ void Game::handleEvents(ChatClient &cliente)
                 break;
                 }
             }
-            else
+            else{
                 testButton->handleEvents(e);
-            
+                //if (currentBoat != nullptr) currentBoat->handleEvents(e);
+            }
             
         }
 }

@@ -28,7 +28,7 @@ public:
     void update();
     void render();
     void handleEvent(messageInfo& info);
-	void handleEvents(SDL_Event& event){};
+	void handleEvents(SDL_Event& event);
     
     //SDL_Rect getRect() const;
     void hayHueco();

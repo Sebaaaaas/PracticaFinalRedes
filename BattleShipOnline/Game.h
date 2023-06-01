@@ -14,8 +14,6 @@ class Button;
 class Vector2D;
 class Texture;
 class Tablero;
-class GameStateMachine;
-class GameState;
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 640;
@@ -45,9 +43,10 @@ public:
 private:
 
     bool quit = false;
+    bool faseColocacion = true;
+    bool miTurno = true;
+    
     bool barcoCogido = false;
-
-    GameStateMachine* gsMachine = nullptr;
 
     Tablero *gameBoard = nullptr;
     Barco *b = nullptr;
