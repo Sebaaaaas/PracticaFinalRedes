@@ -9,6 +9,14 @@ void Texture::free(){
    w = h = 0;
 }
 
+void Texture::rotate(float degrees){
+	angle_ += degrees;
+}
+
+void Texture::rotateTo(float degrees){
+	angle_ = degrees;
+}
+
 void Texture::load(string filename, uint nRows, uint nCols) {
 	SDL_Surface* tempSurface = IMG_Load(filename.c_str());
 	if (tempSurface == nullptr) throw "Error loading surface from " + filename;
@@ -39,5 +47,7 @@ void Texture::renderFrame(const SDL_Rect& destRect, int row, int col, int angle,
 	srcRect.w = fw;
 	srcRect.h = fh;
 
-	SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, angle, 0, flip);
+	SDL_Point rotationCenter = { destRect.h/2, destRect.h/2 };
+
+	SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, angle, &rotationCenter, flip);
 }

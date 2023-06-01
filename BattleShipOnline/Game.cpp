@@ -100,7 +100,7 @@ void Game::handleEvents(ChatClient &cliente)
             }
             else{
                 testButton->handleEvents(e);
-                //if (currentBoat != nullptr) currentBoat->handleEvents(e);
+                if (currentBoat != nullptr) currentBoat->handleEvents(e);
             }
             
         }
@@ -119,4 +119,19 @@ void Game::crearBarco()
 void Game::addBoat(Game* game)
 {
     game->crearBarco();
+}
+
+void Game::cambiaFase(){
+    faseColocacion = !faseColocacion;
+}
+
+void Game::cambiaTurno(){
+    miTurno = !miTurno;
+}
+
+void Game::comienzaPartida(){
+
+    //if(todos los barcos estan colocados)
+    //cambiaFase();
+
 }

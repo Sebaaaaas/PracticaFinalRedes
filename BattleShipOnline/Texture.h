@@ -21,6 +21,7 @@ private:
     uint fh = 0; // Frame height
     uint numCols = 1;
     uint numRows = 1;
+    float angle_ = 0;
 
 public:
    Texture(SDL_Renderer* r) : renderer(r){};
@@ -32,6 +33,9 @@ public:
    int getH() const { return h; };
    uint getNumCols() const { return numCols; };
    SDL_Texture* getTexture() const { return texture; };
+
+   void rotate(float degrees);
+   void rotateTo(float degrees);
 
    void load(string filename, uint numRows = 1, uint numCols = 1);
    void render(const SDL_Rect& rect, SDL_RendererFlip flip = SDL_FLIP_NONE) const;

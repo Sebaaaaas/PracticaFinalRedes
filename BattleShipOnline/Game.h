@@ -40,6 +40,12 @@ public:
 
     inline void setBarcoCogido() { barcoCogido = false; };
 
+    void cambiaFase();
+    void cambiaTurno();
+    //comienza el juego, cambiando de fase para emezar a disparar, 
+    //solo disponible una vez colocados todos los barcos
+    void comienzaPartida(); 
+
 private:
 
     bool quit = false;
@@ -53,6 +59,8 @@ private:
     Barco* currentBoat = nullptr;
     Vector2D* v = nullptr;
     Button *testButton = nullptr;
+    Button *estoyListo = nullptr; //para dar click y empezar a jugar
+
 
     std::list<Barco*> boats;
     // The window we'll be rendering to

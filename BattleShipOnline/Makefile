@@ -18,7 +18,6 @@ CLIENT_DEPS = Tablero.cpp \
 				GameObjects/Barco.cpp \
 				GameObjects/Button.cpp \
 				GameObjects/BattleShipObject.cpp \
-				GameStateMachine.cpp \
 				Network/ClickSerializer.cpp \
 				Network/ClientServer.cpp \
 				Network/Socket.cc \
