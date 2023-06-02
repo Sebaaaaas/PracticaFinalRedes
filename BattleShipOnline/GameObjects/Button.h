@@ -2,6 +2,7 @@
 
 #include "BattleShipObject.h"
 #include "../Vector2D.h"
+#include <utility>
 
 class Game;
 

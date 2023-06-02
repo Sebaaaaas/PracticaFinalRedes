@@ -69,17 +69,33 @@ void Game::run(ChatClient &cliente)
     // INICIO DEL TABLERO REAL, 100 en X y 90 en Y
     // 460 de ancho 320 de largo
     //  46 por columna    40 por fila
-
+    bool startLoop = false;
+    while(!startLoop){
+        if(messageReceived){
+            messageReceived = false;
+            if(serverInfo.type == MessageBarco::BEGIN_GAME){
+                 startLoop = true;
+            }
+        }
+    }
     while (!quit)
     {
         if(messageReceived){
             messageReceived = false;
             //std::cout << "Game.cpp X : "<< serverInfo.pos.getX() << " Y : " << serverInfo.pos.getY() << "\n";
+            if(serverInfo.type == MessageBarco::LOGOUT){
+                 std::cout << " mensaje recibido\n" ;
+                 quit = true;
+                 continue;
+            }
+            // if(serverInfo.type == MessageBarco::BEGIN_GAME){
+            //      startLoop = true;
+            // }
             if(setup){
                 gameBoard->processEnemy(serverInfo);
             }
             else if(!setup && !attackPhase){
-                std::cout << "serverInfo X " << serverInfo.pos.getX() << " Y " << serverInfo.pos.getY() << "\n";
+                std::cout << "serverInfo X " << serverInfo.message.pos.getX() << " Y " << serverInfo.message.pos.getY() << "\n";
                 gameBoard->processDefense(serverInfo);
             }
         }
@@ -124,6 +140,7 @@ void Game::update()
 
     //cambiamos de fase una vez pulsado el boton con todos los barcos colocados
     if(readyForNextPhase && barcosAPoner.empty()){
+        readyForNextPhase = false;
         changeAtacar();
     }
 
@@ -179,7 +196,7 @@ void Game::addBoat(Game* game)
 }
 
 
-void Game::createMessage(const setupInfo &boatInfo)
+void Game::createMessage(const MessageBarco &boatInfo)
 {
   info = boatInfo;
 }
@@ -209,9 +226,9 @@ void Game::readyUpForGame(Game* game){
     game->cambiaFase();
 }
 
-void Game::captureServerMessage(setupInfo i)
+void Game::captureServerMessage(const MessageBarco &i)
 {
-    std::cout << "ServerMessage X " << i.pos.getX() << " Y " << i.pos.getY() << "\n" ; 
+    std::cout << "ServerMessage X " << i.message.pos.getX() << " Y " << i.message.pos.getY() << "\n" ; 
     serverInfo = i;
     messageReceived = true;
 }

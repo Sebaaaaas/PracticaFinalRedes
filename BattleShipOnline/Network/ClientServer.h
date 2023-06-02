@@ -17,7 +17,7 @@ typedef struct {
     bool horizontal = true;
     int16_t longitud = 0;
 } setupInfo;
-class ChatMessage : public Serializable
+class MessageBarco : public Serializable
 {
 public:
     static const size_t MAX_NAME = 20;
@@ -26,12 +26,13 @@ public:
     enum MessageType
     {
         LOGIN = 0,
-        SETUP = 1,
-        ATTACK = 2,
-        LOGOUT = 3
+        BEGIN_GAME = 1,
+        SETUP = 2,
+        ATTACK = 3,
+        LOGOUT = 4
     };
-    ChatMessage() {};
-    ChatMessage(const std::string& n, setupInfo m) :message(m) {
+    MessageBarco() {};
+    MessageBarco(const std::string& n, setupInfo m) :message(m) {
         std::strncpy(nick, n.c_str(), MAX_NAME - 1);
         nick[MAX_NAME - 1] = '\0';
         std::cout << nick << " es el nick";
@@ -42,6 +43,8 @@ public:
     char nick[MAX_NAME];
     setupInfo message;
 };
+
+const int MAX_PLAYERS = 2;
 
 class ChatServer {
 
@@ -67,7 +70,7 @@ public:
 
     void logout();
 
-    void input_thread(setupInfo& info);
+    void input_thread(MessageBarco& info);
 
     void net_thread(Game *game);
 

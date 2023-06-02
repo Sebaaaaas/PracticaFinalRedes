@@ -18,8 +18,8 @@ class Tablero;
 class BattleShipObject;
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 960;
-const int SCREEN_HEIGHT = 720;
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
 
 const int NUM_TEXTURES = 5;
 
@@ -56,9 +56,9 @@ public:
 
     void crearBarco();
 
-    void createMessage(const setupInfo &info);
+    void createMessage(const MessageBarco &info);
 
-    void captureServerMessage(setupInfo i);
+    void captureServerMessage(const MessageBarco &i);
 
     inline bool getAttackPhase(){return attackPhase;}
 
@@ -103,8 +103,8 @@ private:
 
     Button *testButton2 = nullptr;
 
-    setupInfo info;
-    setupInfo serverInfo;
+    MessageBarco info;
+    MessageBarco serverInfo;
 
     std::list<BattleShipObject*> setupGameObjects;
     std::list<BattleShipObject*> attackGameObjects;

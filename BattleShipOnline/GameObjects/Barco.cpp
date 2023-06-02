@@ -33,7 +33,7 @@ void Barco::handleEvents(SDL_Event& event)
     if(event.type == SDL_MOUSEBUTTONDOWN){
         if(event.button.button == SDL_BUTTON_LEFT){
         // creo un evento auxiliar
-            setupInfo info;
+            MessageBarco info;
             int x, y;
             SDL_GetMouseState(&x, &y);
             boatClick->setClickPos(x, y);
@@ -41,10 +41,11 @@ void Barco::handleEvents(SDL_Event& event)
 
             if(puedeColocarse && !colocado) {
                 colocaBarco();
-                info.pos = Vector2D(x, y);
-                info.horizontal = horizontal;
-                info.longitud = longitud;
-                info.isMessage = true;
+                info.message.pos = Vector2D(x, y);
+                info.message.horizontal = horizontal;
+                info.message.longitud = longitud;
+                info.message.isMessage = true;
+                info.type = MessageBarco::SETUP;
                 m_game->setBarcoCogido();
                 m_game->createMessage(info);
             }

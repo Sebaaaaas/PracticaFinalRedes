@@ -38,10 +38,10 @@ public:
 
 
     //Procesa los barcos enemigos y los coloca en una matriz para hacer comprobaciones posteriores.
-    void processEnemy(setupInfo info);
+    void processEnemy(MessageBarco info);
 
     //Procesa los ataques enemigos y representa en el tablero si has recibido un hit o no.
-    void processDefense(setupInfo info);
+    void processDefense(MessageBarco info);
 
     //Procesa tus ataques, los envía al enemigo y representa en el tablero si has acertado o no.
     void processAttack(const Vector2D &clickPos);

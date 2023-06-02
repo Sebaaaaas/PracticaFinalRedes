@@ -2,7 +2,7 @@
 #include "../Game.h"
 
 
-void ChatMessage::to_bin()
+void MessageBarco::to_bin()
 {
     
     alloc_data(MESSAGE_SIZE);
@@ -22,7 +22,7 @@ void ChatMessage::to_bin()
     tmp += sizeof(bool);
     memcpy(tmp, &message.longitud, sizeof(int16_t));
 }
-int ChatMessage::from_bin(char* bobj)
+int MessageBarco::from_bin(char* bobj)
 {
     alloc_data(MESSAGE_SIZE);
     memcpy(static_cast<void*>(_data), bobj, MESSAGE_SIZE);
@@ -54,6 +54,7 @@ int ChatMessage::from_bin(char* bobj)
 
 void ChatServer::do_messages()
 {
+    int players = 0;
     while (true)
     {
         /*
@@ -66,22 +67,42 @@ void ChatServer::do_messages()
         // - LOGIN: Añadir al vector clients
         // - LOGOUT: Eliminar del vector clients
         // - SETUP: Reenviar el mensaje a todos los clientes (menos el emisor)
-        ChatMessage msg;
+        MessageBarco msg;
         Socket *sock;
         socket.recv(msg, sock);
 
         switch(msg.type){
-            case ChatMessage::LOGIN:
+            case MessageBarco::LOGIN:
             {
-                std::cout << msg.nick << " joined the room\n";
-                std::unique_ptr<Socket> uniqueSocket(sock);
-                
+                 std::unique_ptr<Socket> uniqueSocket(sock);
                 clients.push_back(std::move(uniqueSocket));
+                
+                 if(players < MAX_PLAYERS){
+                     std::cout << msg.nick << " joined the room " << players << "\n";
+                     players++;
+                     if(players == 2){
+                         for (auto it = clients.begin(); it != clients.end(); ++it) {
+                             msg.type = MessageBarco::BEGIN_GAME;
+                             socket.send(msg, **it);    
+                             msg.type = MessageBarco::LOGIN;
+                         }
+                     }
+                 }
+                 else{
+
+                     std::cout << " room is full\n";
+                     auto it = clients.end();
+                     --it;
+                     msg.type = MessageBarco::LOGOUT;
+                     socket.send(msg, **it);
+                     clients.erase(it);
+                     msg.type = MessageBarco::LOGIN;
+                 }
 
             }
             break;
 
-            case ChatMessage::LOGOUT:
+            case MessageBarco::LOGOUT:
             {
                 for (auto it = clients.begin(); it != clients.end() && !(**it == *sock); ++it) {
                     if (it == clients.end()) {
@@ -94,7 +115,7 @@ void ChatServer::do_messages()
             }
             break;
 
-            case ChatMessage::SETUP:
+            case MessageBarco::SETUP:
             {
                 for (auto it = clients.begin(); it != clients.end(); ++it) {
                     if (!(**it == *sock))
@@ -113,8 +134,8 @@ void ChatClient::login()
 {
     setupInfo msg;
 
-    ChatMessage em(nick, msg);
-    em.type = ChatMessage::LOGIN;
+    MessageBarco em(nick, msg);
+    em.type = MessageBarco::LOGIN;
 
     std::cout << "attempting to log in...\n";
 
@@ -125,21 +146,21 @@ void ChatClient::logout()
 {
     setupInfo msg;
 
-    ChatMessage om(nick, msg);
-    om.type = ChatMessage::LOGOUT;
+    MessageBarco om(nick, msg);
+    om.type = MessageBarco::LOGOUT;
 
     std::cout << "logging out...\n";
 
     socket.send(om, socket);
 }
 
-void ChatClient::input_thread(setupInfo& info)
+void ChatClient::input_thread(MessageBarco& info)
 {
-    if (info.isMessage) {
+    if (info.message.isMessage) {
         std::cout << "Enviando mensaje...\n";
-        ChatMessage im = ChatMessage(nick, info);
-        im.type = ChatMessage::SETUP;
-        info.isMessage = false;
+        MessageBarco im = MessageBarco(nick, info.message);
+        im.type = info.type;
+        info.message.isMessage = false;
         socket.send(im, socket);
     }
 }
@@ -147,7 +168,7 @@ void ChatClient::input_thread(setupInfo& info)
 void ChatClient::net_thread(Game* game)
 {
     Socket* s = new Socket(socket);
-    ChatMessage socketMessage;
+    MessageBarco socketMessage;
     while (true)
     {
         //Recibir Mensajes de red
@@ -156,7 +177,7 @@ void ChatClient::net_thread(Game* game)
 
         std::cout << socketMessage.nick << ": " << socketMessage.message.pos.getX() << " " << socketMessage.message.pos.getY() << " " << socketMessage.message.horizontal << " " << socketMessage.message.longitud << "\n";
 
-        game->captureServerMessage(socketMessage.message);
+        game->captureServerMessage(socketMessage);
 
     }
 }
