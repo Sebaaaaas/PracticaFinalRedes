@@ -70,11 +70,17 @@ void Game::run(ChatClient &cliente)
     // 460 de ancho 320 de largo
     //  46 por columna    40 por fila
     bool startLoop = false;
-    while(!startLoop){
-        if(messageReceived){
-            messageReceived = false;
-            if(serverInfo.type == MessageBarco::BEGIN_GAME){
-                 startLoop = true;
+    while (!startLoop) {
+
+        if (messageReceived) {
+            messageReceived = false
+            if (serverInfo.type == MessageBarco::BEGIN_GAME) {
+                startLoop = true;
+            }
+            if (serverInfo.type == MessageBarco::LOGOUT) {
+                std::cout << " mensaje recibido\n";
+                quit = true;
+                startLoop = true;
             }
         }
     }
