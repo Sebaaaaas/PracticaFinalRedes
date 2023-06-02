@@ -29,7 +29,7 @@ Game::Game()
     testButton = new Button(v, 60, 60, {0,1}, {0,3}, arrayTex[BUTTON], addBoat, this);
 
     v = new Vector2D(200, 0);
-    testButton2 = new Button(v, 60, 60, {0,1}, {0,3}, arrayTex[BUTTON], attack, this);
+    testButton2 = new Button(v, 60, 60, {0,1}, {0,3}, arrayTex[BUTTON], readyUpForGame, this);
     attackGameObjects.push_back(testButton2);
 
     setupGameObjects.push_back(testButton);
@@ -42,31 +42,11 @@ Game::Game()
     std::pair<int, int> texPos = {0,1};
     std::pair<int, int> texPos2 = {0,0};
 
-    lonAct = bw * barcosAPoner.front();
-    v = new Vector2D(SCREEN_WIDTH - lonAct - 20, bh + 100);
-    botonBarco = new Button(v, lonAct, bh, texPos, texPos2, arrayTex[BOAT_PLACE], addBoat, this);
-
-    // lonAct = bw * 4;
-    // v = new Vector2D(SCREEN_WIDTH  - lonAct - 20, bh * 2 + 105);
-    // botonBarco4 = new Button(v, lonAct, bh, texPos, texPos2, arrayTex[BOAT_PLACE], addBoat, this);
-
-    // lonAct = bw * 3;
-    // v = new Vector2D(SCREEN_WIDTH - lonAct - 20, bh * 3 + 110);
-    // botonBarco3 = new Button(v, lonAct, bh, texPos, texPos2, arrayTex[BOAT_PLACE], addBoat, this);
-
-    // lonAct = bw * 3;
-    // v = new Vector2D(SCREEN_WIDTH - lonAct - 20, bh * 4 + 115);
-    // botonBarco3_2 = new Button(v, lonAct, bh, texPos, texPos2, arrayTex[BOAT_PLACE], addBoat, this);
-
-    // lonAct = bw * 2;
-    // v = new Vector2D(SCREEN_WIDTH - lonAct - 20, bh * 5 + 120);
-    // botonBarco2 = new Button(v, lonAct, bh, texPos, texPos2, arrayTex[BOAT_PLACE], addBoat, this);
-
-    setupGameObjects.push_back(botonBarco);
-    // setupGameObjects.push_back(botonBarco4);
-    // setupGameObjects.push_back(botonBarco3);
-    // setupGameObjects.push_back(botonBarco3_2);
-    // setupGameObjects.push_back(botonBarco2);
+    // lonAct = bw * barcosAPoner.front();
+    // v = new Vector2D(SCREEN_WIDTH - lonAct - 20, bh + 100);
+    // botonBarco = new Button(v, lonAct, bh, texPos, texPos2, arrayTex[BOAT_PLACE], addBoat, this);
+  
+    // setupGameObjects.push_back(botonBarco);
 
 }
 
@@ -142,6 +122,11 @@ void Game::update()
         }
     }
 
+    //cambiamos de fase una vez pulsado el boton con todos los barcos colocados
+    if(readyForNextPhase && barcosAPoner.empty()){
+        changeAtacar();
+    }
+
 }
 
 void Game::handleEvents(ChatClient &cliente)
@@ -193,20 +178,6 @@ void Game::addBoat(Game* game)
     game->crearBarco();
 }
 
-void Game::cambiaFase(){
-    faseColocacion = !faseColocacion;
-}
-
-void Game::cambiaTurno(){
-    miTurno = !miTurno;
-}
-
-void Game::comienzaPartida(){
-
-    //if(todos los barcos estan colocados)
-    //cambiaFase();
-
-}
 
 void Game::createMessage(const setupInfo &boatInfo)
 {
@@ -222,6 +193,20 @@ void Game::changeAtacar(){
     else{
         std::cout << "Estas en ataque \n";
     }
+}
+
+void Game::cambiaFase(){
+    // faseColocacion = !faseColocacion;
+    readyForNextPhase = true;
+
+}
+
+void Game::cambiaTurno(){
+    miTurno = !miTurno;
+}
+
+void Game::readyUpForGame(Game* game){
+    game->cambiaFase();
 }
 
 void Game::captureServerMessage(setupInfo i)

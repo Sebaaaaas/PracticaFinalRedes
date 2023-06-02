@@ -38,6 +38,7 @@ void Barco::handleEvents(SDL_Event& event)
             SDL_GetMouseState(&x, &y);
             boatClick->setClickPos(x, y);
             boatClick->toFileAndBack(clickDeserialize);
+
             if(puedeColocarse && !colocado) {
                 colocaBarco();
                 info.pos = Vector2D(x, y);

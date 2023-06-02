@@ -51,16 +51,12 @@ public:
     void run(ChatClient& cliente);
 
     void render();
-
     void update();
-
     void handleEvents(ChatClient &cliente);
 
     void crearBarco();
 
     void createMessage(const setupInfo &info);
-
-    void changeAtacar();
 
     void captureServerMessage(setupInfo i);
 
@@ -76,21 +72,20 @@ public:
 
     static void addBoat(Game* game);
 
-    // static void (Game* game);
-
     inline void setBarcoCogido() { barcoCogido = false; };
 
+    void changeAtacar();
     void cambiaFase();
     void cambiaTurno();
-    //comienza el juego, cambiando de fase para emezar a disparar, 
-    //solo disponible una vez colocados todos los barcos
-    void comienzaPartida(); 
+    //si le das al boton que llama a este metodo, manda mensaje al servidor de que estas listo para empezar la partida
+    static void readyUpForGame(Game* game); 
 
 private:
 
     bool quit = false;
     bool faseColocacion = true;
     bool miTurno = true;
+    bool readyForNextPhase = false;
     
     bool barcoCogido = false;
     bool messageReceived = false;
@@ -105,12 +100,6 @@ private:
     Button *estoyListo = nullptr; //para dar click y empezar a jugar
     
     Button *botonBarco = nullptr; //cambia de textura para representar el siguiente barco disponible
-
-    // Button *botonBarco5 = nullptr;
-    // Button *botonBarco4 = nullptr;
-    // Button *botonBarco3 = nullptr;
-    // Button *botonBarco3_2 = nullptr;
-    // Button *botonBarco2 = nullptr;
 
     Button *testButton2 = nullptr;
 

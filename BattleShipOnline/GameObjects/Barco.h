@@ -40,12 +40,8 @@ private:
     bool horizontal = true;
     boat_place current_boat_place;
 
-    // Texture* tex = nullptr;
-    // Vector2D pos;
     Click *boatClick = nullptr;
     Click *clickDeserialize = nullptr;
-    // double width; // ancho
-	// double height; // alto
     Tablero* currentTablero = nullptr;
     bool colocado = false;
     bool puedeColocarse = true;
